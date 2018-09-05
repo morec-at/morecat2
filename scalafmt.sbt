@@ -1,2 +1,2 @@
-scalafmtVersion in ThisBuild := "1.2.0"
+scalafmtVersion in ThisBuild := "1.4.0"
 scalafmtOnCompile in ThisBuild := true

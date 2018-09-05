@@ -1,8 +1,28 @@
-logs
+# Numerous always-ignore extensions
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.vi
+*~
+*.sass-cache
+
+# OS or Editor folders
+*.iml
+.idea
+.DS_Store
+.cache
+.project
+.settings
+.classpath
+.tmproj
+nbproject
+Thumbs.db
+
+# sbt
 target
-/.idea
-/.idea_modules
-/.classpath
-/.project
-/.settings
-/RUNNING_PID
+project/project
+project/target
