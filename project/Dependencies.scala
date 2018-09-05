@@ -3,10 +3,11 @@ import sbt._
 object Dependencies {
 
   object Versions {
-    val http4s    = "0.18.17"
-    val specs2    = "4.2.0"
-    val logback   = "1.2.3"
-    val scalaTest = "3.0.5"
+    val http4s     = "0.18.17"
+    val specs2     = "4.2.0"
+    val logback    = "1.2.3"
+    val pureConfig = "0.9.2"
+    val scalaTest  = "3.0.5"
   }
 
   object Http4s {
@@ -17,6 +18,10 @@ object Dependencies {
 
   object Logback {
     val classic = "ch.qos.logback" % "logback-classic" % Versions.logback
+  }
+
+  object PureConfig {
+    val pureConfig = "com.github.pureconfig" %% "pureconfig" % Versions.pureConfig
   }
 
   object ScalaTest {

@@ -13,6 +13,7 @@ lazy val commonSettings = Seq(
   scalacOptions in (Compile, console) --= ScalacOptions.disabledInRepl,
   libraryDependencies ++= Seq(
     Logback.classic,
+    PureConfig.pureConfig,
     ScalaTest.scalatest % Test
   )
 )
