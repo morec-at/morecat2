@@ -9,9 +9,8 @@ inThisBuild(
   )
 )
 
-scalacOptions in (Compile, console) --= ScalacOptions.disabledInRepl
-
 lazy val commonSettings = Seq(
+  scalacOptions in (Compile, console) --= ScalacOptions.disabledInRepl,
   libraryDependencies ++= Seq(
     Logback.classic,
     ScalaTest.scalatest % Test
