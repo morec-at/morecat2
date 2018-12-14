@@ -1,9 +1,11 @@
 package morecat.bootstrap
 
 import cats.effect.IO
+import morecat.infrastructure.rdb.RdbConfig
+import morecat.ui.ServerConfig
 import pureconfig.error.ConfigReaderException
 
-case class Config(server: ServerConfig)
+case class Config(server: ServerConfig, rdb: RdbConfig)
 
 object Config {
   def load(): IO[Config] = {
@@ -15,5 +17,3 @@ object Config {
     }
   }
 }
-
-case class ServerConfig(host: String, port: Int)

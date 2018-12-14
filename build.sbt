@@ -5,11 +5,11 @@ inThisBuild(
     organization := "morecat",
     version := "0.0.1-SNAPSHOT",
     scalaVersion := "2.12.6",
-    scalacOptions ++= ScalacOptions.enabled
   )
 )
 
 lazy val commonSettings = Seq(
+  scalacOptions ++= ScalacOptions.enabled,
   scalacOptions in (Compile, console) --= ScalacOptions.disabledInRepl,
   libraryDependencies ++= Seq(
     Logback.classic,
@@ -22,14 +22,20 @@ lazy val root = (project in file("."))
   .settings(
     name := "morecat2"
   )
-  .aggregate(bootstrap, ui)
+  .aggregate(domain, bootstrap, ui, infrastructure)
 
-lazy val bootstrap = (project in file("bootstrap"))
+lazy val domain = (project in file("domain"))
   .settings(commonSettings)
   .settings(
-    name := "bootstrap"
+    name := "domain"
   )
-  .dependsOn(ui)
+
+lazy val usecase = (project in file("usecase"))
+  .settings(commonSettings)
+  .settings(
+    name := "usecase"
+  )
+  .dependsOn(domain)
 
 lazy val ui = (project in file("ui"))
   .settings(commonSettings)
@@ -41,3 +47,24 @@ lazy val ui = (project in file("ui"))
       Http4s.dsl
     )
   )
+  .dependsOn(domain, usecase)
+
+lazy val infrastructure = (project in file("infrastructure"))
+  .settings(commonSettings)
+  .settings(
+    name := "infrastructure",
+    libraryDependencies ++= Seq(
+      Doobie.doobie
+    )
+  )
+  .dependsOn(domain)
+
+lazy val bootstrap = (project in file("bootstrap"))
+  .settings(commonSettings)
+  .settings(
+    name := "bootstrap",
+    libraryDependencies ++= Seq(
+      Airframe.di
+    )
+  )
+  .dependsOn(ui, infrastructure)

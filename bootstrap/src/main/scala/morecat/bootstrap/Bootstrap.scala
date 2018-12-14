@@ -2,7 +2,10 @@ package morecat.bootstrap
 
 import cats.effect.{Effect, IO}
 import fs2.{Stream, StreamApp}
+import morecat.infrastructure.rdb.article.ArticleRepositoryOnJDBC
+import morecat.ui.article.ArticleController
 import morecat.ui.{apiVersion, HealthCheckController}
+import morecat.usecase.ArticleResolver
 import org.http4s.HttpService
 import org.http4s.server.blaze.BlazeBuilder
 
@@ -18,14 +21,20 @@ object Bootstrap extends StreamApp[IO] {
 
 object ServerStream {
 
-  def helloWorldService[F[_]: Effect]: HttpService[F] = new HealthCheckController[F].service
+  def healthCheckController[F[_]: Effect]: HttpService[F] = new HealthCheckController[F].service
+  def articleController[F[_]: Effect]: HttpService[F] =
+    new ArticleController[F](new ArticleResolver(new ArticleRepositoryOnJDBC)).service
+
+//  val services = healthCheckController <+> articleController
 
   def stream[F[_]: Effect](implicit ec: ExecutionContext): Stream[IO, StreamApp.ExitCode] = {
     for {
       config <- Stream.eval(Config.load())
       exitCode <- BlazeBuilder[IO]
         .bindHttp(config.server.port, config.server.host)
-        .mountService(helloWorldService, s"/$apiVersion")
+        .mountService(healthCheckController, s"/$apiVersion")
+        .mountService(articleController, s"/$apiVersion")
+//        .mountService(services)
         .serve
     } yield exitCode
   }
