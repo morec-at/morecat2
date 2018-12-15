@@ -4,7 +4,7 @@ inThisBuild(
   Seq(
     organization := "morecat",
     version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.12.6",
+    scalaVersion := "2.12.8",
   )
 )
 
