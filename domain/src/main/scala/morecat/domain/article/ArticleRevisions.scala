@@ -6,6 +6,10 @@ sealed abstract case class ArticleRevisions(private val id: ArticleId, private v
 
   val totalNumberOfRevisions: Int = values.size
 
+  val createdAt: ArticleUpdatedAt = first().updatedAt
+
+  val currentTitle: ArticleTitle = latest().title
+
   val editors: ArticleEditors = ArticleEditors(values.map(_.editor))
 
   def revise(editor: ArticleEditor, title: ArticleTitle, content: ArticleContent, log: ArticleUpdateLog)(
@@ -16,6 +20,7 @@ sealed abstract case class ArticleRevisions(private val id: ArticleId, private v
     new ArticleRevisions(id, this.values + newRevision) {}
   }
 
+  def first(): ArticleRevision  = values.toSeq.minBy(_.number)
   def latest(): ArticleRevision = values.toSeq.maxBy(_.number)
 
   def revision(revisionNum: Int): Option[ArticleRevision] = values.find(_.number == revisionNum)

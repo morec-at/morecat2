@@ -15,6 +15,9 @@ sealed abstract case class Article(id: ArticleId,
 
   val editors: ArticleEditors = revisions.editors
 
+  def url(alias: Option[String] = None): String =
+    s"${revisions.createdAt.formattedForUrl}/${alias.getOrElse(revisions.currentTitle.prettifiedForUrl)}"
+
   def revision(revisionNum: Int): Option[ArticleRevision] = revisions.revision(revisionNum)
 
   def revisions(first: Int, second: Int): (Option[ArticleRevision], Option[ArticleRevision]) =

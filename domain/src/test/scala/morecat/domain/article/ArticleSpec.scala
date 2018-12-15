@@ -1,6 +1,6 @@
 package morecat.domain.article
 
-import java.time.Clock
+import java.time.{Clock, ZoneId, ZonedDateTime}
 
 import org.scalatest.{DiagrammedAssertions, FlatSpec}
 
@@ -137,6 +137,36 @@ class ArticleSpec extends FlatSpec with DiagrammedAssertions {
 
     val tagged = initial.tagging("A", "B", "C")
     assert(tagged.tags.all.size === 3)
+  }
+
+  it should "have a URL" in {
+    val zoneId    = ZoneId.of("UTC")
+    val createdAt = ZonedDateTime.of(2019, 1, 1, 0, 0, 0, 0, zoneId).toInstant
+
+    val initial = Article.create(
+      id = ArticleId("1"),
+      tags = ArticleTags.noTags,
+      editor = ArticleEditor("editor"),
+      title = ArticleTitle("This is title"),
+      content = ArticleContent("content"),
+      status = Public,
+      log = ArticleUpdateLog.noLogs()
+    )(Clock.fixed(createdAt, zoneId))
+
+    assert(initial.url() === "2019/01/01/this-is-title")
+    assert(initial.url(Some("you-can-override-it")) === "2019/01/01/you-can-override-it")
+
+    val updatedAt = ZonedDateTime.of(2019, 2, 1, 0, 0, 0, 0, zoneId).toInstant
+
+    val updated = initial.update(
+      editor = ArticleEditor("editor"),
+      title = ArticleTitle("This is title(edited)"),
+      content = ArticleContent("updated content"),
+      log = ArticleUpdateLog.noLogs()
+    )(Clock.fixed(updatedAt, zoneId))
+
+    println(updated.url())
+    assert(updated.url() === "2019/01/01/this-is-title(edited)")
   }
 
 }

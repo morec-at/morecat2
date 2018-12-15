@@ -13,8 +13,11 @@ class ArticleTitleSpec extends FlatSpec with DiagrammedAssertions {
     val spacesAndBlank = " this is title  "
     assert(ArticleTitle(spacesAndBlank).prettifiedForUrl === "this-is-title")
 
-    val nonAscii = "　これは タイトル　です "
-    assert(ArticleTitle(nonAscii).prettifiedForUrl === "これは-タイトル-です")
+    val fullWidthSpace = "　これは タイトル　です "
+    assert(ArticleTitle(fullWidthSpace).prettifiedForUrl === "これは-タイトル-です")
+
+    val toLowerCase = "This is title"
+    assert(ArticleTitle(toLowerCase).prettifiedForUrl === "this-is-title")
   }
 
   it should "provide the shortened one" in {

@@ -10,19 +10,21 @@ case class ArticleTitle(value: String) {
 
   private val ShortenedThreshold = 32
 
-  val prettifiedForUrl: String = this
-    .trim()
-    .replace(Space, '-')
+  val prettifiedForUrl: String = {
+    this
+      .trim()
+      .toLowerCase()
+      .replace(Space, '-')
+  }
 
   val shortened: String = if (value.length > ShortenedThreshold) {
     value.take(ShortenedThreshold) + "..."
   } else value
 
-  private def trim(): String = {
+  private def trim(): String =
     this.value
       .replace(NoBreakSpace, Space)
       .replace(FullWidthSpace, Space)
       .trim
-  }
 
 }
