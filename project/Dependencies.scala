@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
 
   object Versions {
-    val http4s     = "0.18.17"
+    val http4s     = "0.20.0-M4"
     val doobie     = "0.5.3"
     val airframe   = "0.61"
     val logback    = "1.2.3"

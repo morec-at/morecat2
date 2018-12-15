@@ -1,37 +1,34 @@
 package morecat.bootstrap
 
-import cats.effect.{Effect, IO}
-import fs2.{Stream, StreamApp}
-import morecat.ui.{apiVersion, HealthCheckController}
-import org.http4s.HttpService
-import org.http4s.server.blaze.BlazeBuilder
+import cats.effect._
+import cats.implicits._
+import morecat.ui._
+import org.http4s.HttpRoutes
+import org.http4s.implicits._
+import org.http4s.server.Router
+import org.http4s.server.blaze.BlazeServerBuilder
 
-import scala.concurrent.ExecutionContext
+object Bootstrap extends IOApp {
 
-object Bootstrap extends StreamApp[IO] {
+  def run(args: List[String]): IO[ExitCode] =
+    ServerStream.stream[IO].compile.drain.as(ExitCode.Success)
 
-  import scala.concurrent.ExecutionContext.Implicits.global
-
-  def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, StreamApp.ExitCode] =
-    ServerStream.stream[IO]
 }
 
 object ServerStream {
 
-  def healthCheckController[F[_]: Effect]: HttpService[F] = new HealthCheckController[F].service
-//  def articleController[F[_]: Effect]: HttpService[F] =
-//    new ArticleController[F](new ArticleResolver(new ArticleRepositoryOnJDBC)).service
+  def stream[F[_]: ConcurrentEffect: Timer]: fs2.Stream[F, ExitCode] = {
+    def healthCheckRoutes: HttpRoutes[F] = new HealthCheckRoutes[F].routes
 
-//  val services = healthCheckController <+> articleController
+    val routes = healthCheckRoutes
 
-  def stream[F[_]: Effect](implicit ec: ExecutionContext): Stream[IO, StreamApp.ExitCode] = {
+    val httpApp = Router(s"/$apiVersion" -> routes).orNotFound
+
     for {
-      config <- Stream.eval(Config.load())
-      exitCode <- BlazeBuilder[IO]
-        .bindHttp(config.server.port, config.server.host)
-        .mountService(healthCheckController, s"/$apiVersion")
-//        .mountService(articleController, s"/$apiVersion")
-//        .mountService(services)
+//      config <- fs2.Stream.eval(Config.load())
+      exitCode <- BlazeServerBuilder[F]
+//        .bindHttp(config.server.port, config.server.host)
+        .withHttpApp(httpApp)
         .serve
     } yield exitCode
   }

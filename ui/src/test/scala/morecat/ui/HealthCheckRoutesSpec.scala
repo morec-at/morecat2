@@ -5,9 +5,9 @@ import org.http4s._
 import org.http4s.implicits._
 import org.scalatest.{DiagrammedAssertions, FlatSpec}
 
-class HealthCheckControllerSpec extends FlatSpec with DiagrammedAssertions {
+class HealthCheckRoutesSpec extends FlatSpec with DiagrammedAssertions {
 
-  behavior of "HealthCheckController"
+  behavior of "HealthCheckRoutes"
 
   it should "return 200" in {
     assert(healthCheckResponse.status === Status.Ok)
@@ -19,7 +19,7 @@ class HealthCheckControllerSpec extends FlatSpec with DiagrammedAssertions {
 
   private[this] val healthCheckResponse: Response[IO] = {
     val getHealtz = Request[IO](Method.GET, Uri.uri("/healthz"))
-    new HealthCheckController[IO].service.orNotFound(getHealtz).unsafeRunSync()
+    new HealthCheckRoutes[IO].routes.orNotFound(getHealtz).unsafeRunSync()
   }
 
 }
