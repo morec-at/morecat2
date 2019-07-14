@@ -14,9 +14,17 @@ inThisBuild(
   )
 )
 
+val infra = (project in file("core/infra"))
+  .settings(
+    libraryDependencies ++= Seq(
+      Ulid4s.ulid4s
+    )
+  )
+
 val domain = (project in file("core/domain"))
   .settings(
     libraryDependencies ++= Seq(
       Cats.core
     )
   )
+  .dependsOn(infra)
