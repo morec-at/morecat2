@@ -28,3 +28,6 @@ val domain = (project in file("core/domain"))
     )
   )
   .dependsOn(infra)
+
+val usecase = (project in file("core/usecase"))
+  .dependsOn(domain)
