@@ -14,20 +14,22 @@ inThisBuild(
   )
 )
 
-val infra = (project in file("core/infra"))
+val commandInfra = (project in file("command/infra"))
   .settings(
     libraryDependencies ++= Seq(
       Ulid4s.ulid4s
     )
   )
 
-val domain = (project in file("core/domain"))
+val commandDomain = (project in file("command/domain"))
   .settings(
     libraryDependencies ++= Seq(
       Cats.core
     )
   )
-  .dependsOn(infra)
+  .dependsOn(commandInfra)
 
-val usecase = (project in file("core/usecase"))
-  .dependsOn(domain)
+val commandUseCase = (project in file("command/usecase"))
+  .dependsOn(commandDomain)
+
+val query = project
