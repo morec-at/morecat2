@@ -31,3 +31,5 @@ val commandDomain = (project in file("command/domain"))
 
 val commandUseCase = (project in file("command/usecase"))
   .dependsOn(commandDomain)
+
+val query = project
