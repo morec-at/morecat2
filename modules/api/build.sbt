@@ -1,37 +1,27 @@
-name := "morecat-api"
-organization := "morecat"
-scalaVersion := "2.13.8"
+ThisBuild / organization := "morecat"
 
-enablePlugins(AkkaserverlessPlugin, JavaAppPackaging, DockerPlugin)
-Compile / scalacOptions ++= Seq(
-  "-target:11",
+ThisBuild / scalaVersion := "2.13.8"
+ThisBuild / Compile / scalacOptions ++= Seq(
   "-deprecation",
+  "-encoding",
+  "utf-8",
   "-feature",
   "-unchecked",
-  "-Xlog-reflective-calls",
   "-Xlint",
   "-Werror"
 )
 (Compile / console / scalacOptions) ~= { _.filterNot(_ == "-Werror") }
-Compile / javacOptions ++= Seq(
-  // for Jackson
-  "-Xlint:unchecked",
-  "-Xlint:deprecation",
-  "-parameters"
+
+ThisBuild / libraryDependencies ++= Seq(
+  "org.scalatest" %% "scalatest" % "3.2.12" % Test
 )
 
-Test / parallelExecution := false
-Test / testOptions += Tests.Argument("-oDF")
-Test / logBuffered := false
+lazy val root = (project in file(".")).aggregate(domain)
 
-Compile / run := {
-  // needed for the proxy to access the user function on all platforms
-  sys.props += "akkaserverless.user-function-interface" -> "0.0.0.0"
-  (Compile / run).evaluated
-}
-run / fork := false
-Global / cancelable := false
-
-libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.2.11" % Test
+val AkkaVersion = "2.6.19"
+lazy val domain = (project in file("domain")).settings(
+  libraryDependencies ++= Seq(
+    "com.typesafe.akka" %% "akka-actor-typed" % AkkaVersion,
+    "com.typesafe.akka" %% "akka-actor-testkit-typed" % AkkaVersion % Test
+  )
 )
