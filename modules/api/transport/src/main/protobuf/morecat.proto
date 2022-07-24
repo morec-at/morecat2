@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "morecat.transport.grpc";
+option java_outer_classname = "MorecatProto";
+
+package morecat;
+
+service BlogService {
+  rpc CreateBlog (CreateBlogRequest) returns (Blog) {}
+  rpc GetBlog (GetBlogRequest) returns (Blog) {}
+}
+
+message CreateBlogRequest {
+  string title = 1;
+}
+
+message GetBlogRequest {
+  string id = 1;
+}
+
+message Blog {
+  string id = 1;
+  string title = 2;
+}
