@@ -1,11 +1,10 @@
-name := "morecat-api"
-organization := "morecat"
-scalaVersion := "2.13.8"
+ThisBuild / organization := "morecat"
 
-enablePlugins(AkkaserverlessPlugin, JavaAppPackaging, DockerPlugin)
-Compile / scalacOptions ++= Seq(
-  "-target:11",
+ThisBuild / scalaVersion := "2.13.8"
+ThisBuild / Compile / scalacOptions ++= Seq(
   "-deprecation",
+  "-encoding",
+  "utf-8",
   "-feature",
   "-unchecked",
   "-Xlog-reflective-calls",
@@ -13,25 +12,17 @@ Compile / scalacOptions ++= Seq(
   "-Werror"
 )
 (Compile / console / scalacOptions) ~= { _.filterNot(_ == "-Werror") }
-Compile / javacOptions ++= Seq(
-  // for Jackson
-  "-Xlint:unchecked",
-  "-Xlint:deprecation",
-  "-parameters"
+
+ThisBuild / libraryDependencies ++= Seq(
+  "org.scalatest" %% "scalatest" % "3.2.12" % Test
 )
 
-Test / parallelExecution := false
-Test / testOptions += Tests.Argument("-oDF")
-Test / logBuffered := false
+lazy val bootstrap = (project in file("."))
+  .aggregate(transport)
+  .dependsOn(transport)
+  .settings(
+    libraryDependencies ++= Seq()
+  )
 
-Compile / run := {
-  // needed for the proxy to access the user function on all platforms
-  sys.props += "akkaserverless.user-function-interface" -> "0.0.0.0"
-  (Compile / run).evaluated
-}
-run / fork := false
-Global / cancelable := false
-
-libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.2.11" % Test
-)
+lazy val transport = (project in file("transport"))
+  .enablePlugins(AkkaGrpcPlugin)
