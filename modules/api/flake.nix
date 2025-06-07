@@ -31,7 +31,15 @@
         default = pkgs.mkShell {
           packages = with pkgs; [
             sbt
+            # for Claude Code
+            nodejs_22
+            ripgrep
           ];
+          # for Claude Code
+          shellHook = ''
+            export NPM_CONFIG_PREFIX="$HOME/.npm-global"
+            export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
+          '';
         };
       });
     };
