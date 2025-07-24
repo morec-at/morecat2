@@ -23,6 +23,10 @@ lazy val root = project
   .settings(
     name := "api",
     libraryDependencies ++= Seq(
-      zioHttp
+      zioHttp,
+      zioTest,
+      zioTestSBT,
+      zioTestMagnolia,
+      cats
     )
   )
