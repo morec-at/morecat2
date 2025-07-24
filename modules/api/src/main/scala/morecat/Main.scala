@@ -1,4 +1,4 @@
-package morecat.api
+package morecat
 
 import zio.*
 import zio.http.*
